@@ -4,16 +4,18 @@ import { Colors } from "../../constants/Colors";
 import { db } from "../../configs/FirbaseConfig";
 import { collection, getDocs, query } from "firebase/firestore";
 import CategoryItem from "./CategoryItem";
+import { useRouter } from "expo-router";
 
 export default function Category() {
   const [categoryList, setCategoryList] = useState([]);
+  const router = useRouter();
 
   const GetCategoryList = async () => {
     setCategoryList([]);
     const q = query(collection(db, "Category"));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      console.log(doc.data());
+      // console.log(doc.data());
       setCategoryList((prev) => [...prev, doc.data()]);
     });
   };
@@ -59,7 +61,7 @@ export default function Category() {
           marginLeft: 20,
         }}
         renderItem={({ index, item }) => (
-          <CategoryItem onCategoryPress={(category) => console.log(category)} category={item} key={index} />
+          <CategoryItem onCategoryPress={(category) => router.push('/businessList/'+item.name)} category={item} key={index} />
         )}
       />
     </View>
