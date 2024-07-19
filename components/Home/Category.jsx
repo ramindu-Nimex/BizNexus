@@ -6,7 +6,7 @@ import { collection, getDocs, query } from "firebase/firestore";
 import CategoryItem from "./CategoryItem";
 import { useRouter } from "expo-router";
 
-export default function Category() {
+export default function Category({ explore=false, onCategorySelect }) {
   const [categoryList, setCategoryList] = useState([]);
   const router = useRouter();
 
@@ -24,35 +24,47 @@ export default function Category() {
     GetCategoryList();
   }, []);
 
+  const onCategoryPressHandler = (item) => {
+    if (!explore) {
+      router.push('/businessList/'+item.name)
+    } else {
+      onCategorySelect(item.name);
+    }
+  }
+
   return (
     <View>
-      <View
-        style={{
-          padding: 20,
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginTop: 10,
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 20,
-            fontFamily: "outfit-bold",
-          }}
-        >
-          Category
-        </Text>
-        <Text
-          style={{
-            color: Colors.PRIMARY,
-            fontFamily: "outfit-medium",
-          }}
-        >
-          View All
-        </Text>
-      </View>
+      {
+        !explore && (
+          <View
+            style={{
+              padding: 20,
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginTop: 10,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 20,
+                fontFamily: "outfit-bold",
+              }}
+            >
+              Category
+            </Text>
+            <Text
+              style={{
+                color: Colors.PRIMARY,
+                fontFamily: "outfit-medium",
+              }}
+            >
+              View All
+            </Text>
+          </View>
+        )
+      }
       <FlatList
         data={categoryList}
         horizontal={true}
@@ -61,7 +73,7 @@ export default function Category() {
           marginLeft: 20,
         }}
         renderItem={({ index, item }) => (
-          <CategoryItem onCategoryPress={(category) => router.push('/businessList/'+item.name)} category={item} key={index} />
+          <CategoryItem onCategoryPress={(category) => onCategoryPressHandler(item)} category={item} key={index} />
         )}
       />
     </View>
