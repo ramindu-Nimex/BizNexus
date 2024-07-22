@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,17 +8,17 @@ import {
   ToastAndroid,
   ActivityIndicator,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import { useNavigation } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
 import { Colors } from "../../constants/Colors";
 import * as ImagePicker from "expo-image-picker";
 import RNPickerSelect from "react-native-picker-select";
 import { collection, doc, getDocs, query, setDoc } from "firebase/firestore";
-import { db, storage } from "../../configs/FirbaseConfig";
+
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useUser } from "@clerk/clerk-expo";
+import { db, storage } from "../../configs/FirbaseConfig";
 
-export default function Add_business() {
+export default function AddBusiness() {
   const navigation = useNavigation();
   const [image, setImage] = useState(null);
   const [categoryList, setCategoryList] = useState([]);
@@ -38,7 +39,7 @@ export default function Add_business() {
         backgroundColor: Colors.PRIMARY,
       },
     });
-    GetCategoryList();
+    getCategoryList();
   }, []);
 
   const onImagePick = async () => {
@@ -50,10 +51,11 @@ export default function Add_business() {
 
     if (!result.canceled) {
       setImage(result?.assets[0]?.uri);
+      
     }
   };
 
-  const GetCategoryList = async () => {
+  const getCategoryList = async () => {
     setCategoryList([]);
     const q = query(collection(db, "Category"));
     const snapshot = await getDocs(q);
@@ -74,17 +76,17 @@ export default function Add_business() {
       if (!image) {
         throw new Error("Please select an image.");
       }
-  
+
       const fileName = Date.now().toString() + ".jpg";
       const response = await fetch(image);
       const blob = await response.blob();
       const storageRef = ref(storage, "business-app/" + fileName);
-  
+
       await uploadBytes(storageRef, blob);
-  
+
       const downloadUrl = await getDownloadURL(storageRef);
       console.log("File available at", downloadUrl);
-  
+
       await saveBusinessDetail(downloadUrl);
       ToastAndroid.show("New Business Added Successfully", ToastAndroid.LONG);
     } catch (error) {
@@ -96,7 +98,7 @@ export default function Add_business() {
     } finally {
       setLoading(false);
     }
-  };  
+  };
 
   const saveBusinessDetail = async (imageUrl) => {
     try {
@@ -183,7 +185,7 @@ export default function Add_business() {
           }}
         />
         <TextInput
-          placeholder="WebSite"
+          placeholder="Website"
           onChangeText={(v) => setWebsite(v)}
           style={{
             padding: 10,
