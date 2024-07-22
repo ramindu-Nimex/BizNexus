@@ -34,6 +34,9 @@ export default function Add_business() {
     navigation.setOptions({
       headerTitle: "Add New Business",
       headerShown: true,
+      headerStyle: {
+        backgroundColor: Colors.PRIMARY,
+      },
     });
     GetCategoryList();
   }, []);
