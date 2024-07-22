@@ -34,7 +34,7 @@ export default function My_business() {
     );
     const snapshot = await getDocs(q);
       snapshot.forEach((doc) => {
-        setBusinessList((prev) => [...prev, {id:doc.data(), ...doc.data()}]);
+        setBusinessList((prev) => [...prev, {id:doc.id, ...doc.data()}]);
       });
     setLoading(false);
   };
